@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "581501120820",
+    "project_id": "day-challenge-e7c87",
+    "storage_bucket": "day-challenge-e7c87.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:581501120820:android:126aa248898d6d7433b561",
+        "android_client_info": {
+          "package_name": "com.example.day_challenge"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "581501120820-jqkoplp1vpbjetcdsd2tvlr1sta2a4o1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWDyPeob3jXK1-fwsBwQboasWiCJoIqFc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "581501120820-jqkoplp1vpbjetcdsd2tvlr1sta2a4o1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
