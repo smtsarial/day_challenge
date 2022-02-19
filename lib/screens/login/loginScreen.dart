@@ -1,4 +1,5 @@
 import 'package:day_challenge/db/auth.dart';
+import 'package:day_challenge/main.dart';
 import 'package:day_challenge/screens/challenge_lists.dart';
 import 'package:day_challenge/screens/login/registerScreen.dart';
 import 'package:flutter/material.dart';
@@ -28,8 +29,10 @@ class _LoginPageState extends State<LoginPage> {
       tag: 'hero',
       child: Center(
         child: Text(
-          "DAY CHALLENGE",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          "DAILY CHALLENGES",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontSize: 40, fontWeight: FontWeight.bold, color: Colors.black54),
         ),
       ),
     );
@@ -149,11 +152,10 @@ class _LoginPageState extends State<LoginPage> {
             await auth.login(emailController.text, passwordController.text);
 
         await saveData(_userEmail.toString());
+        FocusManager.instance.primaryFocus!.unfocus();
 
         Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => ChallengeList()),
-        );
+            context, MaterialPageRoute(builder: (context) => LaunchScreen()));
       } catch (err) {
         setState(() {
           _warningMessage = true;

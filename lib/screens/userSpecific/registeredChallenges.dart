@@ -1,77 +1,40 @@
+import 'package:day_challenge/db/auth.dart';
 import 'package:day_challenge/db/firestore.dart';
 import 'package:day_challenge/db/storage.dart';
 import 'package:day_challenge/models/challenges.dart';
 
 import 'package:day_challenge/screens/challenge_detail.dart';
-import 'package:day_challenge/screens/login/loginScreen.dart';
-import 'package:day_challenge/screens/userSpecific/registeredChallenges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ChallengeList extends StatefulWidget {
-  const ChallengeList({Key? key}) : super(key: key);
+class RegisteredChallenges extends StatefulWidget {
+  const RegisteredChallenges({Key? key}) : super(key: key);
 
   @override
-  _ChallengeListState createState() => _ChallengeListState();
+  _RegisteredChallengesState createState() => _RegisteredChallengesState();
 }
 
-class _ChallengeListState extends State<ChallengeList> {
+class _RegisteredChallengesState extends State<RegisteredChallenges> {
   List<ChallengeDetail> challengeLists = [];
   List<ChallengeDetail> challengeListsCopy = [];
-  late String userMail;
+  late String userMail = "";
 
   TextEditingController editingController = TextEditingController();
 
-  Future<void> readySharedPreferences() async {
-    var sharedPreferences = await SharedPreferences.getInstance();
-    var _usermail = sharedPreferences.getString("userMail");
-    print(_usermail.toString());
-    setState(() {
-      userMail = _usermail.toString();
-    });
-  }
-
   @override
   void initState() {
-    //Storage.listFiles();
+    Authentication().getUser().then((value) =>
+        FirestoreHelper.getFavoriteChallenges(value)
+            .then((value) => setState(() {
+                  challengeLists = value;
+                  challengeListsCopy = value;
+                })));
     if (mounted) {
-      FirestoreHelper.getDetailsList().then((data) {
-        setState(() {
-          challengeLists = data;
-          challengeListsCopy = data;
-        });
-      });
+      //Storage.listFiles();
+
     }
     super.initState();
-  }
-
-  String filterSearchResults(String query) {
-    List<ChallengeDetail> dummySearchList = [];
-    dummySearchList.addAll(challengeLists);
-
-    List<ChallengeDetail> dummyListData = [];
-    if (query.isNotEmpty) {
-      dummySearchList.forEach((item) {
-        if (item.challenge_name.toLowerCase().contains(query.toLowerCase())) {
-          dummyListData.add(item);
-        }
-      });
-      setState(() {
-        challengeLists = dummyListData;
-      });
-      return "dummyListData";
-    } else if (query.isEmpty) {
-      setState(() {
-        challengeLists = challengeListsCopy;
-      });
-      return "";
-    } else {
-      setState(() {
-        challengeLists = dummySearchList;
-      });
-      return "dummySearchList";
-    }
   }
 
   @override
@@ -142,19 +105,6 @@ class _ChallengeListState extends State<ChallengeList> {
                                         Container(
                                           child: Column(
                                             children: [
-                                              Text(
-                                                "Type",
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              Text(item.type.toString())
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          child: Column(
-                                            children: [
                                               Text("Level"),
                                               RatingBarIndicator(
                                                 rating: double.parse(
@@ -179,11 +129,39 @@ class _ChallengeListState extends State<ChallengeList> {
                         },
                       )
                     : Center(
-                        child: Text("Challenges not found!"),
+                        child: Text("You need to join a challenge!"),
                       ))
           ],
         )),
       ),
     );
+  }
+
+  String filterSearchResults(String query) {
+    List<ChallengeDetail> dummySearchList = [];
+    dummySearchList.addAll(challengeLists);
+
+    List<ChallengeDetail> dummyListData = [];
+    if (query.isNotEmpty) {
+      dummySearchList.forEach((item) {
+        if (item.challenge_name.toLowerCase().contains(query.toLowerCase())) {
+          dummyListData.add(item);
+        }
+      });
+      setState(() {
+        challengeLists = dummyListData;
+      });
+      return "dummyListData";
+    } else if (query.isEmpty) {
+      setState(() {
+        challengeLists = challengeListsCopy;
+      });
+      return "";
+    } else {
+      setState(() {
+        challengeLists = dummySearchList;
+      });
+      return "dummySearchList";
+    }
   }
 }

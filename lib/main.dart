@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:day_challenge/db/firestore.dart';
 import 'package:day_challenge/screens/challenge_lists.dart';
 import 'package:day_challenge/screens/login/loginScreen.dart';
+import 'package:day_challenge/screens/login/profile.dart';
+import 'package:day_challenge/screens/userSpecific/registeredChallenges.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,12 +18,12 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   Future testData() async {
-    FirebaseFirestore db = FirebaseFirestore.instance;
-    var data = await db.collection('event_details').get();
-    var details = data.docs.toList();
-    details.forEach((item) {
-      print(item);
-    });
+    //FirebaseFirestore db = FirebaseFirestore.instance;
+    //var data = await db.collection('challenges').get();
+    //var details = data.docs.toList();
+    //details.forEach((item) {
+    //  print(item);
+    //});
   }
 
   @override
@@ -41,7 +43,7 @@ class LaunchScreen extends StatefulWidget {
 }
 
 class _LaunchScreenState extends State<LaunchScreen> {
-  late String userMail;
+  late String userMail = "";
   Future<void> readySharedPreferences() async {
     var sharedPreferences = await SharedPreferences.getInstance();
     var _usermail = sharedPreferences.getString("userMail");
@@ -54,15 +56,37 @@ class _LaunchScreenState extends State<LaunchScreen> {
   @override
   void initState() {
     readySharedPreferences().then((value) => print("--*" + userMail));
-    // TODO: implement initState
     super.initState();
   }
 
+  void onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
+  int _currentIndex = 0;
+  final List _children = [ChallengeList(), RegisteredChallenges(), EditPage()];
   @override
   Widget build(BuildContext context) {
     if (userMail.length >= 5) {
       return Scaffold(
-        body: Center(child: ChallengeList()),
+        body: _children[_currentIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          onTap: onTabTapped, // new
+          currentIndex: _currentIndex, // new
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.app_registration),
+              label: 'Joined',
+            ),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile')
+          ],
+        ),
       );
     } else {
       return Scaffold(

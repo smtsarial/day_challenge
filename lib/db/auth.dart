@@ -10,19 +10,23 @@ class Authentication {
     return user?.uid ?? "HATA";
   }
 
-  Future<String> signUp(String email, String password) async {
-    UserCredential userCredentials = await _firebaseAuth
-        .createUserWithEmailAndPassword(email: email, password: password);
-    User? user = userCredentials.user;
-    return user?.uid ?? "";
+  Future<bool> signUp(String email, String password) async {
+    try {
+      UserCredential userCredentials = await _firebaseAuth
+          .createUserWithEmailAndPassword(email: email, password: password);
+      User? user = userCredentials.user;
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   Future<void> signOut() async {
     return _firebaseAuth.signOut();
   }
 
-  Future<User?> getUser() async {
+  Future<String?> getUser() async {
     User? user = await _firebaseAuth.currentUser;
-    return user;
+    return user?.email;
   }
 }
