@@ -94,6 +94,30 @@ class FirestoreHelper {
     }
   }
 
+  static Future<List<ChallengeDetail>> getMyChallenges(email) async {
+    List<ChallengeDetail> details = [];
+    try {
+      var data = await db
+          .collection("challenges")
+          .where("author_mail", isEqualTo: email)
+          .get();
+      if (data != null) {
+        details = data.docs
+            .map((document) => ChallengeDetail.fromMap(document))
+            .toList();
+      }
+      int i = 0;
+      details.forEach((detail) {
+        detail.id = data.docs[i].id;
+        i++;
+      });
+      return details;
+    } catch (e) {
+      print(e);
+      return details;
+    }
+  }
+
   /****** END ADD NEW USER */
   /**** GET DATA CHALLENGES */
   static Future<List<ChallengeDetail>> getDetailsList() async {

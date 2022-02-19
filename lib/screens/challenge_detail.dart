@@ -20,7 +20,7 @@ class ChallengeDetailList extends StatefulWidget {
 class _ChallengeDetailListState extends State<ChallengeDetailList> {
   List<DailyChallenge> dailyChallenges = [];
 
-  late bool isUserRegisteredToChallenge = false;
+  late bool isUserRegisteredToChallenge = true;
   late String userMail;
 
   @override
@@ -153,7 +153,7 @@ class _ChallengeDetailListState extends State<ChallengeDetailList> {
                         ],
                       )),
                       padding: EdgeInsets.all(50),
-                      color: Colors.grey,
+                      color: Colors.blueGrey,
                     ),
                     Container(
                       child: Center(
@@ -165,7 +165,7 @@ class _ChallengeDetailListState extends State<ChallengeDetailList> {
                               color: Colors.black),
                         ),
                       ),
-                      color: Color.fromARGB(26, 105, 105, 105),
+                      color: Colors.grey,
                       padding: EdgeInsets.all(20),
                     ),
                     Container(
@@ -179,10 +179,15 @@ class _ChallengeDetailListState extends State<ChallengeDetailList> {
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black),
                             ),
-                            Text(widget.challenge_description.toString())
+                            Text(
+                              widget.challenge_description.toString(),
+                              style:
+                                  TextStyle(fontSize: 18, color: Colors.black),
+                            )
                           ],
                         ),
                       ),
+                      color: Color.fromARGB(26, 105, 105, 105),
                       padding: EdgeInsets.all(40),
                     )
                   ],

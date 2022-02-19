@@ -3,6 +3,7 @@ import 'package:day_challenge/db/firestore.dart';
 import 'package:day_challenge/screens/challenge_lists.dart';
 import 'package:day_challenge/screens/login/loginScreen.dart';
 import 'package:day_challenge/screens/login/profile.dart';
+import 'package:day_challenge/screens/userSpecific/myChallenges.dart';
 import 'package:day_challenge/screens/userSpecific/registeredChallenges.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     testData();
     return MaterialApp(
-        title: 'Events',
+        title: 'Daily Challenges',
         theme: ThemeData(primarySwatch: Colors.green),
         home: LaunchScreen());
   }
@@ -66,13 +67,21 @@ class _LaunchScreenState extends State<LaunchScreen> {
   }
 
   int _currentIndex = 0;
-  final List _children = [ChallengeList(), RegisteredChallenges(), EditPage()];
+  final List _children = [
+    ChallengeList(),
+    RegisteredChallenges(),
+    MyLists(),
+    EditPage()
+  ];
   @override
   Widget build(BuildContext context) {
     if (userMail.length >= 5) {
       return Scaffold(
         body: _children[_currentIndex],
         bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          fixedColor: Colors.white,
+          backgroundColor: Colors.blueGrey,
           onTap: onTabTapped, // new
           currentIndex: _currentIndex, // new
           items: [
@@ -83,6 +92,10 @@ class _LaunchScreenState extends State<LaunchScreen> {
             BottomNavigationBarItem(
               icon: Icon(Icons.app_registration),
               label: 'Joined',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.list),
+              label: 'My Lists',
             ),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile')
           ],
