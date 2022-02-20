@@ -120,7 +120,9 @@ class _EditPageState extends State<EditPage> {
                       saveData("").then((value) => Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => LaunchScreen())));
+                              builder: (context) => LaunchScreen(
+                                    currentIndex: 0,
+                                  ))));
                     },
                     color: Colors.red,
                     padding: EdgeInsets.symmetric(horizontal: 50),

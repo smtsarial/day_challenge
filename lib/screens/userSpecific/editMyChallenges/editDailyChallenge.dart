@@ -1,7 +1,9 @@
 import 'package:day_challenge/db/firestore.dart';
+import 'package:day_challenge/main.dart';
 import 'package:day_challenge/models/challenges.dart';
 import 'package:day_challenge/models/dailyChallenges.dart';
 import 'package:day_challenge/screens/userSpecific/editMyChallenges/editDay.dart';
+import 'package:day_challenge/screens/userSpecific/myChallenges.dart';
 import 'package:flutter/material.dart';
 
 class EditDailyChallenge extends StatefulWidget {
@@ -57,9 +59,22 @@ class _EditDailyChallengeState extends State<EditDailyChallenge> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Center(
-        child: Text("Edit Your Challenge"),
-      )),
+        title: Center(
+          child: Text("Edit Your Challenge"),
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => LaunchScreen(
+                        currentIndex: 2,
+                      )),
+            );
+          },
+        ),
+      ),
       body: ListView.builder(
         itemCount: myChallenge.day_count,
         itemBuilder: (context, position) {
@@ -77,7 +92,7 @@ class _EditDailyChallengeState extends State<EditDailyChallenge> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => EditDay(
-                                                dayID: element,
+                                                dayObject: element,
                                                 day: position + 1,
                                                 challengeID: widget.challengeID,
                                               )));
@@ -90,7 +105,7 @@ class _EditDailyChallengeState extends State<EditDailyChallenge> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => EditDay(
-                                            dayID: new DailyChallenge(
+                                            dayObject: new DailyChallenge(
                                                 "", [], 0, [], ""),
                                             day: position + 1,
                                             challengeID: widget.challengeID,
@@ -104,9 +119,10 @@ class _EditDailyChallengeState extends State<EditDailyChallenge> {
                     ),
                     subtitle: avaliableDays.contains(position + 1)
                         ? Text(
-                            "Topic: "+avaliableDaysTopics[
+                            "Topic: " +
+                                avaliableDaysTopics[
                                         avaliableDays.indexOf(position + 1)]
-                                    .toString() ,
+                                    .toString(),
                             style: TextStyle(fontWeight: FontWeight.bold),
                           )
                         : Text(

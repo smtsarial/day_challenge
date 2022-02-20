@@ -33,12 +33,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Daily Challenges',
         theme: ThemeData(primarySwatch: Colors.green),
-        home: LaunchScreen());
+        home: LaunchScreen(
+          currentIndex: 0,
+        ));
   }
 }
 
 class LaunchScreen extends StatefulWidget {
-  const LaunchScreen({Key? key}) : super(key: key);
+  const LaunchScreen({Key? key, required this.currentIndex}) : super(key: key);
+  final int currentIndex;
   @override
   _LaunchScreenState createState() => _LaunchScreenState();
 }
@@ -54,8 +57,12 @@ class _LaunchScreenState extends State<LaunchScreen> {
     });
   }
 
+  late int _currentIndex;
   @override
   void initState() {
+    setState(() {
+      _currentIndex = widget.currentIndex;
+    });
     readySharedPreferences().then((value) => print("--*" + userMail));
     super.initState();
   }
@@ -66,7 +73,6 @@ class _LaunchScreenState extends State<LaunchScreen> {
     });
   }
 
-  int _currentIndex = 0;
   final List _children = [
     ChallengeList(),
     RegisteredChallenges(),

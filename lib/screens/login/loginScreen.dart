@@ -155,7 +155,11 @@ class _LoginPageState extends State<LoginPage> {
         FocusManager.instance.primaryFocus!.unfocus();
 
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LaunchScreen()));
+            context,
+            MaterialPageRoute(
+                builder: (context) => LaunchScreen(
+                      currentIndex: 0,
+                    )));
       } catch (err) {
         setState(() {
           _warningMessage = true;

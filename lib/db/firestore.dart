@@ -249,6 +249,62 @@ class FirestoreHelper {
     }
   }
 
+  static Future<DailyChallenge> updateDayTask(
+      challengeId, dayID, addValue) async {
+    late DailyChallenge detailData;
+    await db
+        .collection('challenges')
+        .doc(challengeId)
+        .collection('daily_challenges')
+        .doc(dayID)
+        .update({
+      "daily_tasks": FieldValue.arrayUnion([addValue])
+    }).catchError((error) => print('Update failed: $error'));
+
+    await db
+        .collection('challenges')
+        .doc(challengeId)
+        .collection('daily_challenges')
+        .doc(dayID)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        detailData = DailyChallenge.fromMap(documentSnapshot.data());
+      } else {
+        print('Document does not exist on the database');
+      }
+    });
+    return detailData;
+  }
+
+  static Future<DailyChallenge> deleteDayTask(
+      challengeId, dayID, deleteValue) async {
+    late DailyChallenge detailData;
+    await db
+        .collection('challenges')
+        .doc(challengeId)
+        .collection('daily_challenges')
+        .doc(dayID)
+        .update({
+      "daily_tasks": FieldValue.arrayRemove([deleteValue])
+    }).catchError((error) => print('Update failed: $error'));
+
+    await db
+        .collection('challenges')
+        .doc(challengeId)
+        .collection('daily_challenges')
+        .doc(dayID)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        detailData = DailyChallenge.fromMap(documentSnapshot.data());
+      } else {
+        print('Document does not exist on the database');
+      }
+    });
+    return detailData;
+  }
+
 /////END UPDATE
   ///START GET METHODS
 
@@ -275,18 +331,34 @@ class FirestoreHelper {
 
   ///END GET METHODS
   /// START POST METHODS
-
-  static Future<DailyChallenge> addDailyChallenge(value, challengeID) async {
-    dynamic dataa;
-    var data = await db
+  static Future<DailyChallenge> addDailyChallenge(
+      value, challengeID, day) async {
+    await db
         .collection('challenges')
         .doc(challengeID)
         .collection("daily_challenges")
         .add(value);
-    data.get().then((DocumentSnapshot documentSnapshot) {
-      dataa = DailyChallenge.fromMap(documentSnapshot.data());
+
+    List<DailyChallenge> details = [];
+    var data = await db
+        .collection('challenges')
+        .doc(challengeID)
+        .collection("daily_challenges")
+        .where("day_number", isEqualTo: day)
+        .get();
+
+    if (data != null) {
+      details = data.docs
+          .map((document) => DailyChallenge.fromMap(document))
+          .toList();
+    }
+    int i = 0;
+    details.forEach((detail) {
+      detail.id = data.docs[i].id;
+      i++;
     });
-    return dataa;
+
+    return details[0];
   }
 
   /// END POST METHODS
