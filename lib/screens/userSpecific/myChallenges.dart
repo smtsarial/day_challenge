@@ -1,4 +1,6 @@
 import 'package:day_challenge/db/auth.dart';
+import 'package:day_challenge/screens/userSpecific/editMyChallenges/editDailyChallenge.dart';
+import 'package:day_challenge/screens/userSpecific/editMyChallenges/editMainPage.dart';
 import 'package:flutter/material.dart';
 import 'package:day_challenge/db/firestore.dart';
 import 'package:day_challenge/models/challenges.dart';
@@ -31,14 +33,17 @@ class _MyListsState extends State<MyLists> {
 
   @override
   void initState() {
-    //Storage.listFiles();
-    if (mounted) {
-      Authentication().getUser().then((value) =>
-          FirestoreHelper.getMyChallenges(value).then((value) => setState(() {
-                challengeLists = value;
-                challengeListsCopy = value;
-              })));
-    }
+    Authentication().getUser().then(
+        (value) => FirestoreHelper.getMyChallenges(value).then((value) => {
+              if (mounted)
+                {
+                  setState(() {
+                    challengeLists = value;
+                    challengeListsCopy = value;
+                  })
+                }
+            }));
+
     super.initState();
   }
 
@@ -94,12 +99,8 @@ class _MyListsState extends State<MyLists> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    ChallengeDetailList(
-                                                        challenge_id: item.id,
-                                                        challenge_name:
-                                                            item.challenge_name,
-                                                        challenge_description: item
-                                                            .challenge_description)),
+                                                    EditDailyChallenge(
+                                                        challengeID: item.id)),
                                           )
                                         },
                                     title: Text(

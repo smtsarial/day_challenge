@@ -25,15 +25,16 @@ class _RegisteredChallengesState extends State<RegisteredChallenges> {
   @override
   void initState() {
     Authentication().getUser().then((value) =>
-        FirestoreHelper.getFavoriteChallenges(value)
-            .then((value) => setState(() {
-                  challengeLists = value;
-                  challengeListsCopy = value;
-                })));
-    if (mounted) {
-      //Storage.listFiles();
+        FirestoreHelper.getFavoriteChallenges(value).then((value) => {
+              if (mounted)
+                {
+                  setState(() {
+                    challengeLists = value;
+                    challengeListsCopy = value;
+                  })
+                }
+            }));
 
-    }
     super.initState();
   }
 

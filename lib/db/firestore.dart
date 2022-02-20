@@ -174,30 +174,7 @@ class FirestoreHelper {
   }
 
   /**** END GET DATA CHALLENGES */
-  /**** START DAILY CHALLENGES */
 
-  static Future<List<DailyChallenge>> getDailyTasks(challangeID) async {
-    List<DailyChallenge> dailChallenges = [];
-    var data = await db
-        .collection('challenges')
-        .doc(challangeID)
-        .collection("daily_challenges")
-        .orderBy("day_number", descending: false)
-        .get();
-    if (data != null) {
-      dailChallenges = data.docs
-          .map((document) => DailyChallenge.fromMap(document))
-          .toList();
-    }
-    int i = 0;
-    dailChallenges.forEach((detail) {
-      detail.id = data.docs[i].id;
-      i++;
-    });
-    return dailChallenges;
-  }
-
-  /**** END DAILY CHALLENGES */
   /********* REFERANCE ISSUES */
   static Future<bool> checkUserSubscribeOrNot(challengeID, userMail) async {
     bool data = await db
@@ -259,4 +236,59 @@ class FirestoreHelper {
       return false;
     }
   }
+
+//// UPDATE OPERATIONS
+  static Future<bool> updateMainChallenge(challengeId, data) async {
+    try {
+      await db.collection('challenges').doc(challengeId).update(data);
+
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+/////END UPDATE
+  ///START GET METHODS
+
+  static Future<List<DailyChallenge>> getDailyTasks(challangeID) async {
+    List<DailyChallenge> dailChallenges = [];
+    var data = await db
+        .collection('challenges')
+        .doc(challangeID)
+        .collection("daily_challenges")
+        .orderBy("day_number", descending: false)
+        .get();
+    if (data != null) {
+      dailChallenges = data.docs
+          .map((document) => DailyChallenge.fromMap(document))
+          .toList();
+    }
+    int i = 0;
+    dailChallenges.forEach((detail) {
+      detail.id = data.docs[i].id;
+      i++;
+    });
+    return dailChallenges;
+  }
+
+  ///END GET METHODS
+  /// START POST METHODS
+
+  static Future<DailyChallenge> addDailyChallenge(value, challengeID) async {
+    dynamic dataa;
+    var data = await db
+        .collection('challenges')
+        .doc(challengeID)
+        .collection("daily_challenges")
+        .add(value);
+    data.get().then((DocumentSnapshot documentSnapshot) {
+      dataa = DailyChallenge.fromMap(documentSnapshot.data());
+    });
+    return dataa;
+  }
+
+  /// END POST METHODS
+
 }

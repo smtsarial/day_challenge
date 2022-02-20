@@ -16,5 +16,5 @@
         "day_challenge.iml": true,
         "build": true
     },
-    "workspace.isHidden": false
+    "workspace.isHidden": true
 }

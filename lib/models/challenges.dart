@@ -7,6 +7,7 @@ class ChallengeDetail {
   late String author_mail;
   late String challenge_name;
   late String type;
+  late int day_count;
 
   ChallengeDetail(
       this.id,
@@ -16,7 +17,8 @@ class ChallengeDetail {
       this.star,
       this.challenge_description,
       this.challenge_name,
-      this.type);
+      this.type,
+      this.day_count);
 
   ChallengeDetail.fromMap(dynamic obj) {
     author_fname = obj['author_fname'] ?? " ";
@@ -27,6 +29,7 @@ class ChallengeDetail {
     challenge_name = obj['challenge_name'] ?? " ";
     challenge_description = obj['challenge_description'] ?? " ";
     star = obj['star'] ?? 0;
+    day_count = obj['day_count'] ?? 0;
   }
 
   Map<String, dynamic> toMap() {
@@ -39,6 +42,7 @@ class ChallengeDetail {
       map['challenge_name'] = this.challenge_name;
       map['challenge_description'] = this.challenge_description;
       map['star'] = this.star;
+      map['day_count'] = this.day_count;
     }
     return map;
   }

@@ -37,10 +37,12 @@ class _ChallengeListState extends State<ChallengeList> {
     //Storage.listFiles();
     if (mounted) {
       FirestoreHelper.getDetailsList().then((data) {
-        setState(() {
-          challengeLists = data;
-          challengeListsCopy = data;
-        });
+        if (mounted) {
+          setState(() {
+            challengeLists = data;
+            challengeListsCopy = data;
+          });
+        }
       });
     }
     super.initState();
