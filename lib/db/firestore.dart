@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:day_challenge/db/auth.dart';
 import 'package:day_challenge/models/challenges.dart';
 import 'package:day_challenge/models/dailyChallenges.dart';
 import 'package:day_challenge/models/user.dart';
@@ -6,13 +7,34 @@ import 'package:day_challenge/models/user.dart';
 class FirestoreHelper {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
   /****** ADD NEW USER */
-  static Future addNewUser(name, email, phone) {
+  static Future addNewUser(fname, lname, email, phone) {
     var result = db.collection('users').add(User(
+        "",
         "https://firebasestorage.googleapis.com/v0/b/day-challenge-e7c87.appspot.com/o/test%2Ftwitter.png?alt=media&token=2f91c3a0-c4ec-4525-9c65-f6a52d2a15aa",
-        name,
+        fname,
+        lname,
         email,
         phone, []).toMap());
     return result;
+  }
+
+  static Future<User> getUserData(userMail) async {
+    var returnValue;
+    var data =
+        await db.collection('users').where("email", isEqualTo: userMail).get();
+
+    List<User> details = [];
+
+    if (data != null) {
+      details = data.docs.map((document) => User.fromMap(document)).toList();
+    }
+    int i = 0;
+    details.forEach((detail) {
+      detail.id = data.docs[i].id;
+      i++;
+    });
+
+    return details[0];
   }
 
   static Future userRegistedChallenge(email, challengeID) async {
@@ -305,6 +327,22 @@ class FirestoreHelper {
     return detailData;
   }
 
+  static Future<bool> updateDailyChallengeTopic(
+      value, challengeID, dayID) async {
+    try {
+      await db
+          .collection('challenges')
+          .doc(challengeID)
+          .collection("daily_challenges")
+          .doc(dayID)
+          .update({"day_topic": value});
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
 /////END UPDATE
   ///START GET METHODS
 
@@ -331,6 +369,32 @@ class FirestoreHelper {
 
   ///END GET METHODS
   /// START POST METHODS
+
+  static Future<bool> createNewChallenge(
+      name, description, hardness, type, dayCount) async {
+    try {
+      await Authentication().getUser().then((value) {
+        FirestoreHelper.getUserData(value).then((userData) async {
+          await db.collection('challenges').add(ChallengeDetail(
+                  "",
+                  userData.fname,
+                  userData.lname,
+                  userData.email,
+                  int.parse(hardness),
+                  description.toCapitalized(),
+                  name.toTitleCase(),
+                  type.toTitleCase(),
+                  int.parse(dayCount))
+              .toMap());
+        });
+      });
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
   static Future<DailyChallenge> addDailyChallenge(
       value, challengeID, day) async {
     await db

@@ -15,7 +15,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
   TextEditingController passwordController2 = new TextEditingController();
-  TextEditingController nameSurname = new TextEditingController();
+  TextEditingController name = new TextEditingController();
+  TextEditingController Surname = new TextEditingController();
   TextEditingController phone = new TextEditingController();
   final _formKey = GlobalKey<FormState>();
   @override
@@ -55,17 +56,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
 
-    final nameSurname1 = TextFormField(
+    final name1 = TextFormField(
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Please fill the area!';
         }
         return null;
       },
-      controller: nameSurname,
+      controller: name,
       autofocus: false,
       decoration: InputDecoration(
-        hintText: 'Name Surname',
+        hintText: 'Name',
+        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+      ),
+    );
+    final Surname1 = TextFormField(
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please fill the area!';
+        }
+        return null;
+      },
+      controller: Surname,
+      autofocus: false,
+      decoration: InputDecoration(
+        hintText: 'Surname',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
       ),
@@ -160,7 +176,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Column(children: <Widget>[
                 logo,
                 SizedBox(height: 48.0),
-                nameSurname1,
+                name1,
+                SizedBox(
+                  height: 8.0,
+                ),
+                Surname1,
                 SizedBox(
                   height: 8.0,
                 ),
@@ -191,8 +211,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             .then((value) => {
                   if (value == true)
                     {
-                      FirestoreHelper.addNewUser(
-                          nameSurname.text, emailController.text, phone.text)
+                      FirestoreHelper.addNewUser(name.text, Surname.text,
+                          emailController.text, phone.text)
                     }
                   else
                     {

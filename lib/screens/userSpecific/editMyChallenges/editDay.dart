@@ -43,12 +43,7 @@ class _EditDayState extends State<EditDay> {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            "Edit " +
-                widget.day.toString() +
-                ". Day" +
-                createdID +
-                " << " +
-                widget.dayObject.id,
+            "Edit " + widget.day.toString() + ". Day",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           leading: IconButton(
@@ -73,6 +68,16 @@ class _EditDayState extends State<EditDay> {
         ),
         body: Column(
           children: [
+            Divider(),
+            Center(
+              child: Text(
+                "Day Topic",
+                style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey),
+              ),
+            ),
             Form(
                 key: _formKey,
                 child: Column(
@@ -134,92 +139,159 @@ class _EditDayState extends State<EditDay> {
                                           )),
                                         }
                                     });
+                          } else {
+                            if (widget.dayObject.id != "") {
+                              FirestoreHelper.updateDailyChallengeTopic(
+                                      dayTopic.text,
+                                      widget.challengeID,
+                                      widget.dayObject.id)
+                                  .then((value) {
+                                if (value == true) {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content:
+                                        Text("Day topic updated successfully."),
+                                  ));
+                                } else {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: Text("Error occured!"),
+                                  ));
+                                }
+                              });
+                            } else if (createdID != "") {
+                              FirestoreHelper.updateDailyChallengeTopic(
+                                      dayTopic.text,
+                                      widget.challengeID,
+                                      widget.dayObject.id)
+                                  .then((value) {
+                                if (value == true) {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content:
+                                        Text("Day topic updated successfully."),
+                                  ));
+                                } else {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: Text("Error occured!"),
+                                  ));
+                                }
+                              });
+                            } else {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text("Error occured!"),
+                              ));
+                            }
                           }
                         }
                       },
                       child: const Text('Save'),
                     ),
+                    Divider(),
+                    Center(
+                      child: Text(
+                        "Daily Tasks",
+                        style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey),
+                      ),
+                    )
                   ],
                 )),
             Flexible(
               child: Container(
-                child: ListView.builder(
-                  itemCount: dayTasks.length,
-                  itemBuilder: (context, position) {
-                    return Card(
-                      margin: EdgeInsets.fromLTRB(2, 2, 2, 2),
-                      child: Column(
-                        children: [
-                          ListTile(
-                            onTap: () => {},
-                            title: Text(
-                              dayTasks[position].toString(),
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            trailing: IconButton(
-                                icon: Icon(Icons.cancel),
-                                onPressed: () {
-                                  if (widget.dayObject.id != "") {
-                                    FirestoreHelper.deleteDayTask(
-                                            widget.challengeID,
-                                            widget.dayObject.id,
-                                            dayTasks[position].toString())
-                                        .then((value) {
-                                      if (value != null) {
-                                        setState(() {
-                                          dayTasks = value.daily_tasks;
-                                        });
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(
-                                          content: Text(newTaskController.text +
-                                              " deleted succesfully"),
-                                        ));
-                                      } else {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(
-                                          content: Text("Error occured!"),
-                                        ));
-                                      }
-                                    });
-                                  } else if (createdID != "") {
-                                    FirestoreHelper.updateDayTask(
-                                            widget.challengeID,
-                                            createdID,
-                                            dayTasks[position].toString())
-                                        .then((value) {
-                                      if (value != null) {
-                                        setState(() {
-                                          dayTasks = value.daily_tasks;
-                                        });
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(
-                                          content: Text(newTaskController.text +
-                                              " deleted succesfully"),
-                                        ));
-                                      } else {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(
-                                          content: Text("Error occured!"),
-                                        ));
-                                      }
-                                    });
-                                  } else {
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                      content:
-                                          Text("Please first add a day topic."),
-                                    ));
-                                  }
-                                }),
+                  child: dayTasks.length > 0
+                      ? (ListView.builder(
+                          itemCount: dayTasks.length,
+                          itemBuilder: (context, position) {
+                            return Card(
+                              margin: EdgeInsets.fromLTRB(2, 2, 2, 2),
+                              child: Column(
+                                children: [
+                                  ListTile(
+                                    onTap: () => {},
+                                    title: Text(
+                                      dayTasks[position].toString(),
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    trailing: IconButton(
+                                        icon: Icon(Icons.cancel),
+                                        onPressed: () {
+                                          if (widget.dayObject.id != "") {
+                                            FirestoreHelper.deleteDayTask(
+                                                    widget.challengeID,
+                                                    widget.dayObject.id,
+                                                    dayTasks[position]
+                                                        .toString())
+                                                .then((value) {
+                                              if (value != null) {
+                                                setState(() {
+                                                  dayTasks = value.daily_tasks;
+                                                });
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(SnackBar(
+                                                  content: Text(newTaskController
+                                                          .text +
+                                                      " Deleted succesfully"),
+                                                ));
+                                              } else {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(SnackBar(
+                                                  content:
+                                                      Text("Error occured!"),
+                                                ));
+                                              }
+                                            });
+                                          } else if (createdID != "") {
+                                            FirestoreHelper.updateDayTask(
+                                                    widget.challengeID,
+                                                    createdID,
+                                                    dayTasks[position]
+                                                        .toString())
+                                                .then((value) {
+                                              if (value != null) {
+                                                setState(() {
+                                                  dayTasks = value.daily_tasks;
+                                                });
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(SnackBar(
+                                                  content: Text(newTaskController
+                                                          .text +
+                                                      " Deleted succesfully"),
+                                                ));
+                                              } else {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(SnackBar(
+                                                  content:
+                                                      Text("Error occured!"),
+                                                ));
+                                              }
+                                            });
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                              content: Text(
+                                                  "Please first add a day topic."),
+                                            ));
+                                          }
+                                        }),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ))
+                      : Container(
+                          child: Center(
+                            child: Text(
+                                "There is no task for this day. Please add new ones"),
                           ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
+                        )),
             ),
           ],
         ));

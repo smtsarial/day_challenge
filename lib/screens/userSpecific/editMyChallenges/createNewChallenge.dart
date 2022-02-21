@@ -1,42 +1,22 @@
+import 'package:day_challenge/main.dart';
+import 'package:flutter/material.dart';
+
 import 'package:day_challenge/db/firestore.dart';
 import 'package:day_challenge/models/challenges.dart';
 import 'package:day_challenge/screens/userSpecific/editMyChallenges/editDailyChallenge.dart';
-import 'package:flutter/material.dart';
 
-class EditChallengeMain extends StatefulWidget {
-  const EditChallengeMain({Key? key, required this.challengeID})
-      : super(key: key);
-  final String challengeID;
+class CreateNewChallenge extends StatefulWidget {
+  const CreateNewChallenge({Key? key}) : super(key: key);
 
   @override
-  _EditChallengeMainState createState() => _EditChallengeMainState();
+  _CreateNewChallengeState createState() => _CreateNewChallengeState();
 }
 
-class _EditChallengeMainState extends State<EditChallengeMain> {
+class _CreateNewChallengeState extends State<CreateNewChallenge> {
   ChallengeDetail myChallenge =
       new ChallengeDetail("", "", "", "", 0, "", "", "", 0);
   @override
   void initState() {
-    FirestoreHelper.getSpecificChallenge(widget.challengeID).then((value) => {
-          if (mounted)
-            {
-              setState(
-                () => {
-                  myChallenge = value,
-                  challengeName = TextEditingController(
-                      text: myChallenge.challenge_name.toString()),
-                  challengeDescription = TextEditingController(
-                      text: myChallenge.challenge_description.toString()),
-                  star =
-                      TextEditingController(text: myChallenge.star.toString()),
-                  type =
-                      TextEditingController(text: myChallenge.type.toString()),
-                  day_count = TextEditingController(
-                      text: myChallenge.day_count.toString()),
-                },
-              )
-            }
-        });
     // TODO: implement initState
     super.initState();
   }
@@ -55,19 +35,7 @@ class _EditChallengeMainState extends State<EditChallengeMain> {
     return Scaffold(
         appBar: AppBar(
           title: Center(
-            child: Text("Edit Your Challenge"),
-          ),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => EditDailyChallenge(
-                          challengeID: widget.challengeID,
-                        )),
-              );
-            },
+            child: Text("Create New Challenge"),
           ),
         ),
         body: SingleChildScrollView(
@@ -80,7 +48,7 @@ class _EditChallengeMainState extends State<EditChallengeMain> {
                 padding: const EdgeInsets.fromLTRB(16, 2, 16, 2),
                 child: TextFormField(
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                    if (value == null || value.isEmpty || value.length < 5) {
                       return 'Please fill the area!';
                     }
                     return null;
@@ -96,7 +64,7 @@ class _EditChallengeMainState extends State<EditChallengeMain> {
                 padding: const EdgeInsets.fromLTRB(16, 2, 16, 2),
                 child: TextFormField(
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                    if (value == null || value.isEmpty || value.length < 5) {
                       return 'Please fill the area!';
                     }
                     return null;
@@ -133,7 +101,7 @@ class _EditChallengeMainState extends State<EditChallengeMain> {
                 padding: const EdgeInsets.fromLTRB(16, 2, 16, 2),
                 child: TextFormField(
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                    if (value == null || value.isEmpty || value.length < 3) {
                       return 'Please fill the area!';
                     }
                     return null;
@@ -151,8 +119,8 @@ class _EditChallengeMainState extends State<EditChallengeMain> {
                   keyboardType: TextInputType.number,
                   maxLength: 2,
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please fill the area!';
+                    if (value == null || value.isEmpty || value.length >= 3) {
+                      return 'Please fill the area! Fill up to 99';
                     }
                     return null;
                   },
@@ -173,41 +141,30 @@ class _EditChallengeMainState extends State<EditChallengeMain> {
                           borderRadius: BorderRadius.circular(25))),
                   onPressed: () {
                     FocusManager.instance.primaryFocus?.unfocus();
-                    // Validate returns true if the form is valid, or false otherwise.
                     if (_formKey.currentState!.validate()) {
-                      // If the form is valid, display a snackbar. In the real world,
-                      // you'd often call a server or save the information in a database.
-                      FirestoreHelper.updateMainChallenge(
-                              widget.challengeID,
-                              ChallengeDetail(
-                                      widget.challengeID,
-                                      myChallenge.author_fname,
-                                      myChallenge.author_lname,
-                                      myChallenge.author_mail,
-                                      int.parse(star.text),
-                                      challengeDescription.text,
-                                      challengeName.text,
-                                      type.text,
-                                      int.parse(day_count.text))
-                                  .toMap())
-                          .then((value) => {
-                                value
-                                    ? (ScaffoldMessenger.of(context)
-                                        .showSnackBar(
-                                        const SnackBar(
-                                            content: Text(
-                                                'Data added successfully')),
-                                      ))
-                                    : (ScaffoldMessenger.of(context)
-                                        .showSnackBar(
-                                        const SnackBar(
-                                            content: Text(
-                                                'Error occured Please try again')),
-                                      ))
-                              });
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Processing Data')),
-                      );
+                      FirestoreHelper.createNewChallenge(
+                              challengeName.text,
+                              challengeDescription.text,
+                              star.text,
+                              type.text,
+                              day_count.text)
+                          .then((value) {
+                        if (value == true) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text("Challenge created successfully!"),
+                          ));
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text("Error occured!"),
+                          ));
+                        }
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  LaunchScreen(currentIndex: 2)),
+                        );
+                      });
                     }
                   },
                   child: const Text('Save Your Information'),

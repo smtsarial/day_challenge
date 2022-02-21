@@ -1,30 +1,40 @@
 class User {
+  late String id;
   late String imagePath;
-  late String name;
+  late String fname;
+  late String lname;
   late String email;
   late String phone;
-  late List<String> registeredChallengeIDs;
+  late List registeredChallengeIDs;
 
   User(
+    this.id,
     this.imagePath,
-    this.name,
+    this.fname,
+    this.lname,
     this.email,
     this.phone,
     this.registeredChallengeIDs,
   );
   User.fromMap(dynamic obj) {
-    imagePath = obj['imagePath'];
-    name = obj['name'];
-    email = obj['email'];
-    phone = obj['phone'];
-    registeredChallengeIDs = obj['registeredChallengeIDs'];
+    imagePath = obj['imagePath'] ?? " ";
+    fname = obj['fname'] ?? " ";
+    lname = obj['lname'] ?? " ";
+    email = obj['email'] ?? " ";
+    phone = obj['phone'] ?? " ";
+    registeredChallengeIDs = obj['registeredChallengeIDs'] ?? [];
   }
 
-  Map<String, dynamic> toMap() => {
-        'imagePath': imagePath,
-        'name': name,
-        'email': email,
-        'phone': phone,
-        "registeredChallengeIDs": registeredChallengeIDs,
-      };
+  Map<String, dynamic> toMap() {
+    var map = Map<String, dynamic>();
+    if (id != null) {
+      map['imagePath'] = this.imagePath;
+      map['fname'] = this.fname;
+      map['lname'] = this.lname;
+      map['email'] = this.email;
+      map['phone'] = this.phone;
+      map["registeredChallengeIDs"] = this.registeredChallengeIDs;
+    }
+    return map;
+  }
 }

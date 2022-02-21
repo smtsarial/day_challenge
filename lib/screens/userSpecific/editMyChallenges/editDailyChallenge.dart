@@ -3,6 +3,7 @@ import 'package:day_challenge/main.dart';
 import 'package:day_challenge/models/challenges.dart';
 import 'package:day_challenge/models/dailyChallenges.dart';
 import 'package:day_challenge/screens/userSpecific/editMyChallenges/editDay.dart';
+import 'package:day_challenge/screens/userSpecific/editMyChallenges/editMainPage.dart';
 import 'package:day_challenge/screens/userSpecific/myChallenges.dart';
 import 'package:flutter/material.dart';
 
@@ -59,22 +60,35 @@ class _EditDailyChallengeState extends State<EditDailyChallenge> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-          child: Text("Edit Your Challenge"),
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => LaunchScreen(
-                        currentIndex: 2,
-                      )),
-            );
-          },
-        ),
-      ),
+          title: Center(
+            child: Text("Edit Your Challenge"),
+          ),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => LaunchScreen(
+                          currentIndex: 2,
+                        )),
+              );
+            },
+          ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.details),
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => EditChallengeMain(
+                            challengeID: widget.challengeID,
+                          )),
+                );
+              },
+            ),
+          ]),
       body: ListView.builder(
         itemCount: myChallenge.day_count,
         itemBuilder: (context, position) {

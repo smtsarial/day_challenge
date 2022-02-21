@@ -96,7 +96,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.app_registration),
+              icon: Icon(Icons.favorite),
               label: 'Joined',
             ),
             BottomNavigationBarItem(

@@ -1,4 +1,5 @@
 import 'package:day_challenge/db/auth.dart';
+import 'package:day_challenge/screens/userSpecific/editMyChallenges/createNewChallenge.dart';
 import 'package:day_challenge/screens/userSpecific/editMyChallenges/editDailyChallenge.dart';
 import 'package:day_challenge/screens/userSpecific/editMyChallenges/editMainPage.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +54,10 @@ class _MyListsState extends State<MyLists> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Add your onPressed code here!
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CreateNewChallenge()),
+          );
         },
         backgroundColor: Colors.green,
         child: const Icon(Icons.add),
