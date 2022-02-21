@@ -10,7 +10,7 @@ class FirestoreHelper {
   static Future addNewUser(fname, lname, email, phone) {
     var result = db.collection('users').add(User(
         "",
-        "https://firebasestorage.googleapis.com/v0/b/day-challenge-e7c87.appspot.com/o/test%2Ftwitter.png?alt=media&token=2f91c3a0-c4ec-4525-9c65-f6a52d2a15aa",
+        "https://firebasestorage.googleapis.com/v0/b/day-challenge-e7c87.appspot.com/o/test%2Fphoto.png?alt=media&token=c0b743a9-55f7-41ec-86ac-df857a419307",
         fname,
         lname,
         email,

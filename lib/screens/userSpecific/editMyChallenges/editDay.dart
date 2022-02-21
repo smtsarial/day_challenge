@@ -208,7 +208,7 @@ class _EditDayState extends State<EditDay> {
                           itemCount: dayTasks.length,
                           itemBuilder: (context, position) {
                             return Card(
-                              margin: EdgeInsets.fromLTRB(2, 2, 2, 2),
+                              margin: EdgeInsets.fromLTRB(12, 5, 12, 5),
                               child: Column(
                                 children: [
                                   ListTile(

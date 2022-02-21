@@ -31,8 +31,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     testData();
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Daily Challenges',
-        theme: ThemeData(primarySwatch: Colors.green),
+        theme: ThemeData(primarySwatch: Colors.blueGrey),
         home: LaunchScreen(
           currentIndex: 0,
         ));

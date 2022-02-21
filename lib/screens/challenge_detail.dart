@@ -1,6 +1,8 @@
 import 'package:day_challenge/db/auth.dart';
 import 'package:day_challenge/db/firestore.dart';
+import 'package:day_challenge/main.dart';
 import 'package:day_challenge/models/dailyChallenges.dart';
+import 'package:day_challenge/screens/dayDetail.dart';
 import 'package:flutter/material.dart';
 
 class ChallengeDetailList extends StatefulWidget {
@@ -25,15 +27,17 @@ class _ChallengeDetailListState extends State<ChallengeDetailList> {
 
   @override
   void initState() {
-    Authentication()
-        .getUser()
-        .then((value) => setState(() => userMail = value!));
-    Authentication().getUser().then((value) =>
-        FirestoreHelper.checkUserSubscribeOrNot(widget.challenge_id, value)
-            .then((value) =>
-                setState(() => {isUserRegisteredToChallenge = value})));
-
     if (mounted) {
+      Authentication()
+          .getUser()
+          .then((value) => setState(() => userMail = value!));
+      Authentication().getUser().then((value) =>
+          FirestoreHelper.checkUserSubscribeOrNot(widget.challenge_id, value)
+              .then((value) {
+            setState(() => {isUserRegisteredToChallenge = value});
+            if (value == true) {}
+          }));
+
       FirestoreHelper.getDailyTasks(widget.challenge_id).then((data) {
         setState(() {
           dailyChallenges = data;
@@ -63,8 +67,19 @@ class _ChallengeDetailListState extends State<ChallengeDetailList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Color.fromARGB(255, 218, 218, 218),
         appBar: AppBar(
           title: Text(widget.challenge_name),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => LaunchScreen(currentIndex: 0)),
+              );
+            },
+          ),
           actions: [
             isUserRegisteredToChallenge
                 ? FlatButton(
@@ -102,30 +117,53 @@ class _ChallengeDetailListState extends State<ChallengeDetailList> {
           ],
         ),
         body: isUserRegisteredToChallenge
-            ? (ListView.builder(
-                itemCount: dailyChallenges.length,
-                itemBuilder: (context, position) {
-                  return Card(
-                    margin: EdgeInsets.fromLTRB(2, 2, 2, 2),
-                    child: Column(
-                      children: [
-                        ListTile(
-                            title: Text(
-                              "Day " + (position + 1).toString(),
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            subtitle: Text("Subjects: "),
-                            trailing: Wrap(
-                              spacing: 12,
-                              children: [],
-                            )),
-                      ],
+            ? (dailyChallenges.length > 0
+                ? (ListView.builder(
+                    itemCount: dailyChallenges.length,
+                    itemBuilder: (context, position) {
+                      return Card(margin: EdgeInsets.fromLTRB(12, 5, 12, 5),
+                        child: Column(
+                          children: [
+                            ListTile(
+                                onTap: () => {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => DayDetail(
+                                                  dayObject:
+                                                      dailyChallenges[position],
+                                                  day: position + 1,
+                                                  challengeID:
+                                                      widget.challenge_id,
+                                                  challengeName:
+                                                      widget.challenge_name,
+                                                  challengeDesc: widget
+                                                      .challenge_description,
+                                                )),
+                                      )
+                                    },
+                                title: Text(
+                                  "Day " + (position + 1).toString(),
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                subtitle: Text("Subjects: " +
+                                    dailyChallenges[position].day_topic),
+                                trailing: Wrap(
+                                  spacing: 12,
+                                  children: [Icon(Icons.arrow_right)],
+                                )),
+                          ],
+                        ),
+                      );
+                    },
+                  ))
+                : (Container(
+                    child: Center(
+                      child: Text("There is no avaliable day!"),
                     ),
-                  );
-                },
-              ))
+                  )))
             : (SingleChildScrollView(
                 child: Column(
                   children: [

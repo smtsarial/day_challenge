@@ -59,7 +59,7 @@ class _MyListsState extends State<MyLists> {
             MaterialPageRoute(builder: (context) => CreateNewChallenge()),
           );
         },
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.blueGrey,
         child: const Icon(Icons.add),
       ),
       body: SafeArea(
@@ -69,23 +69,53 @@ class _MyListsState extends State<MyLists> {
             Row(
               children: [
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(9, 15, 9, 15),
-                    child: TextField(
-                      onChanged: (value) {
-                        filterSearchResults(value);
-                      },
-                      controller: editingController,
-                      decoration: InputDecoration(
-                          labelText: "Search Challenge",
-                          hintText: "Search Challenge",
-                          prefixIcon: Icon(Icons.search),
-                          border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(25.0)))),
-                    ),
-                  ),
-                ),
+                    child: Padding(
+                  padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
+                  child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(20),
+                            bottomRight: Radius.circular(20)),
+                        color: Colors.blueGrey,
+                      ),
+                      child: Column(
+                        children: [
+                          Container(
+                              child: Padding(
+                            padding: EdgeInsets.fromLTRB(0, 10, 0, 2),
+                            child: Text(
+                              "My Challenges",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 21,
+                                  color: Colors.white),
+                            ),
+                          )),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(20, 2, 20, 15),
+                            child: TextField(
+                              onChanged: (value) {
+                                filterSearchResults(value);
+                              },
+                              controller: editingController,
+                              decoration: InputDecoration(
+                                  iconColor: Colors.white,
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.white),
+                                    borderRadius: BorderRadius.circular(25.7),
+                                  ),
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  hintText: "Search Challenge",
+                                  prefixIcon: Icon(Icons.search),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(25.0)))),
+                            ),
+                          ),
+                        ],
+                      )),
+                )),
               ],
             ),
             Expanded(
@@ -95,7 +125,7 @@ class _MyListsState extends State<MyLists> {
                         itemBuilder: (context, position) {
                           ChallengeDetail item = challengeLists[position];
                           return Card(
-                            margin: EdgeInsets.fromLTRB(2, 2, 2, 2),
+                            margin: EdgeInsets.fromLTRB(12, 5, 12, 5),
                             child: Column(
                               children: [
                                 ListTile(
