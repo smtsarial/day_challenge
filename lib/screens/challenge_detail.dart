@@ -127,7 +127,7 @@ class _ChallengeDetailListState extends State<ChallengeDetailList> {
                           children: [
                             ListTile(
                                 onTap: () => {
-                                      Navigator.push(
+                                      Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => DayDetail(

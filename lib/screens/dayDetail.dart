@@ -99,14 +99,14 @@ class _DayDetailState extends State<DayDetail> {
                             dayStatus = true;
                           });
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text("Task removed successfully"),
+                            content: Text("Error Occured"),
                           ));
                         } else {
                           setState(() {
                             dayStatus = false;
                           });
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text("Error occured!"),
+                            content: Text("Task removed successfully"),
                           ));
                         }
                       });

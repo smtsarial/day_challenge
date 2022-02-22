@@ -148,7 +148,7 @@ class _ChallengeListState extends State<ChallengeList> {
                               children: [
                                 ListTile(
                                     onTap: () => {
-                                          Navigator.push(
+                                          Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
