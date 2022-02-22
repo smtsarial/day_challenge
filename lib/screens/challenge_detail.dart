@@ -93,7 +93,7 @@ class _ChallengeDetailListState extends State<ChallengeDetailList> {
                       );
                     },
                     child: Text(
-                      'Remove',
+                      'Unregister',
                       style: TextStyle(
                           color: Colors.white, fontWeight: FontWeight.bold),
                     ))
@@ -121,7 +121,8 @@ class _ChallengeDetailListState extends State<ChallengeDetailList> {
                 ? (ListView.builder(
                     itemCount: dailyChallenges.length,
                     itemBuilder: (context, position) {
-                      return Card(margin: EdgeInsets.fromLTRB(12, 5, 12, 5),
+                      return Card(
+                        margin: EdgeInsets.fromLTRB(12, 5, 12, 5),
                         child: Column(
                           children: [
                             ListTile(
@@ -148,8 +149,8 @@ class _ChallengeDetailListState extends State<ChallengeDetailList> {
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold),
                                 ),
-                                subtitle: Text("Subjects: " +
-                                    dailyChallenges[position].day_topic),
+                                subtitle:
+                                    Text(dailyChallenges[position].day_topic),
                                 trailing: Wrap(
                                   spacing: 12,
                                   children: [Icon(Icons.arrow_right)],

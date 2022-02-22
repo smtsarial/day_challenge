@@ -32,9 +32,18 @@ class _DayDetailState extends State<DayDetail> {
   TextEditingController newTaskController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final _formKey1 = GlobalKey<FormState>();
+  bool dayStatus = false;
   List<dynamic> dayTasks = [];
   @override
   void initState() {
+    if (mounted) {
+      FirestoreHelper.checkDayStatus(widget.challengeID, widget.dayObject.id)
+          .then((value) {
+        setState(() {
+          dayStatus = value;
+        });
+      });
+    }
     setState(() {
       dayTasks = widget.dayObject.daily_tasks;
     });
@@ -51,6 +60,63 @@ class _DayDetailState extends State<DayDetail> {
             widget.day.toString() + ". Day | " + widget.dayObject.day_topic,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
+          actions: [
+            dayStatus == false
+                ? (FlatButton(
+                    onPressed: () {
+                      FirestoreHelper.completeDayTasks(
+                              widget.challengeID, widget.dayObject.id)
+                          .then((value) {
+                        if (value == true) {
+                          setState(() {
+                            dayStatus = true;
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text("Task completed successfully"),
+                          ));
+                        } else {
+                          setState(() {
+                            dayStatus = false;
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text("Error occured!"),
+                          ));
+                        }
+                      });
+                    },
+                    child: Text(
+                      'Complete',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    )))
+                : (FlatButton(
+                    onPressed: () {
+                      FirestoreHelper.removeDayTasks(
+                              widget.challengeID, widget.dayObject.id)
+                          .then((value) {
+                        if (value == true) {
+                          setState(() {
+                            dayStatus = true;
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text("Task removed successfully"),
+                          ));
+                        } else {
+                          setState(() {
+                            dayStatus = false;
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text("Error occured!"),
+                          ));
+                        }
+                      });
+                    },
+                    child: Text(
+                      'Remove',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    )))
+          ],
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {

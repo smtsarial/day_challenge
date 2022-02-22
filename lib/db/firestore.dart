@@ -343,6 +343,114 @@ class FirestoreHelper {
     }
   }
 
+  static Future<bool> completeDayTasks(challengeID, dayID) async {
+    try {
+      await Authentication().getUser().then((value) async {
+        await db
+            .collection('challenges')
+            .doc(challengeID)
+            .collection('daily_challenges')
+            .doc(dayID)
+            .update({
+          "completed_users": FieldValue.arrayUnion([
+            {value: DateTime.now()}
+          ])
+        });
+      });
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  static Future<bool> removeDayTasks(challengeID, dayID) async {
+    try {
+      bool returnValue = false;
+      await Authentication().getUser().then((value1) async {
+        var data = await db
+            .collection('challenges')
+            .doc(challengeID)
+            .collection('daily_challenges')
+            .doc(dayID)
+            .get();
+        if (data != null) {
+          if (data['completed_users'].length > 0) {
+            data['completed_users'].forEach((value) async {
+              //this part looking for map keys contains or not
+              //.keys value returning iterable value which like a list so I used contains
+              if (value.keys.contains(value1.toString()) == true) {
+                try {
+                  await db
+                      .collection('challenges')
+                      .doc(challengeID)
+                      .collection('daily_challenges')
+                      .doc(dayID)
+                      .update({
+                    "completed_users": FieldValue.arrayRemove([value])
+                  });
+                  returnValue = true;
+                } catch (e) {
+                  print(e);
+                  returnValue = false;
+                }
+              } else {
+                print("yok");
+                returnValue = false;
+              }
+            });
+          } else {
+            print("kucuk");
+            returnValue = false;
+          }
+        } else {
+          returnValue = false;
+        }
+      });
+      return returnValue;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  static Future<bool> checkDayStatus(challengeID, dayID) async {
+    try {
+      bool returnValue = false;
+      await Authentication().getUser().then((value1) async {
+        var data = await db
+            .collection('challenges')
+            .doc(challengeID)
+            .collection('daily_challenges')
+            .doc(dayID)
+            .get();
+        if (data != null) {
+          if (data['completed_users'].length > 0) {
+            data['completed_users'].forEach((value) {
+              //this part looking for map keys contains or not
+              //.keys value returning iterable value which like a list so I used contains
+              if (value.keys.contains(value1.toString()) == true) {
+                print("buldum");
+                returnValue = true;
+              } else {
+                print("yok");
+                returnValue = false;
+              }
+            });
+          } else {
+            print("kucuk");
+            returnValue = false;
+          }
+        } else {
+          returnValue = false;
+        }
+      });
+      return returnValue;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
 /////END UPDATE
   ///START GET METHODS
 

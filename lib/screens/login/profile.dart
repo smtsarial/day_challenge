@@ -1,5 +1,7 @@
 import 'package:day_challenge/db/auth.dart';
+import 'package:day_challenge/db/firestore.dart';
 import 'package:day_challenge/main.dart';
+import 'package:day_challenge/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,6 +24,19 @@ class EditPage extends StatefulWidget {
 
 class _EditPageState extends State<EditPage> {
   bool showPassword = false;
+  User userData = User("", "", "", "", "", "", []);
+
+  @override
+  void initState() {
+    if (mounted) {
+      Authentication().getUser().then((value) {
+        FirestoreHelper.getUserData(value)
+            .then((value) => setState((() => userData = value)));
+      });
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,8 +76,7 @@ class _EditPageState extends State<EditPage> {
                           image: DecorationImage(
                               fit: BoxFit.cover,
                               image: NetworkImage(
-                                "https://firebasestorage.googleapis.com/v0/b/day-challenge-e7c87.appspot.com/o/test%2Fphoto.png?alt=media&token=c0b743a9-55f7-41ec-86ac-df857a419307",
-                              ))),
+                                  "https://firebasestorage.googleapis.com/v0/b/day-challenge-e7c87.appspot.com/o/test%2Fphoto.png?alt=media&token=c0b743a9-55f7-41ec-86ac-df857a419307"))),
                     ),
                     Positioned(
                         bottom: 0,
@@ -89,10 +103,12 @@ class _EditPageState extends State<EditPage> {
               SizedBox(
                 height: 35,
               ),
-              buildTextField("Full Name", "Evan kutto", false),
-              buildTextField("E-mail", "evan@gmail.com", false),
-              buildTextField("Password", "********", true),
-              buildTextField("Location", "New Joursey", false),
+              buildTextField("First Name", userData.fname, false),
+              buildTextField("Last Name", userData.lname, false),
+              buildTextField("E-mail", userData.email, false),
+              buildTextField("Phone", userData.phone, false),
+              buildTextField("Registered Total Challenge",
+                  userData.registeredChallengeIDs.length.toString(), false),
               SizedBox(
                 height: 15,
               ),
@@ -151,6 +167,7 @@ class _EditPageState extends State<EditPage> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 35.0),
       child: TextField(
+        readOnly: true,
         obscureText: isPasswordTextField ? showPassword : false,
         decoration: InputDecoration(
             suffixIcon: isPasswordTextField
