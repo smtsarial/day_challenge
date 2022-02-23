@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.day_challenge">
+    package="com.sametsarial.dailychallenge">
    <application
-        android:label="day_challenge"
+        android:label="Daily Challenge - Create and Follow Online Learning Process"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
