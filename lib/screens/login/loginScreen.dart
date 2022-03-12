@@ -14,9 +14,12 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
   bool _warningMessage = false;
+  TextEditingController newTaskController = TextEditingController();
 
+  final _formKey1 = GlobalKey<FormState>();
   String _warningMessageContent = "";
   late Authentication auth;
+  bool _visibleCircular = false;
   @override
   void initState() {
     auth = Authentication();
@@ -66,12 +69,24 @@ class _LoginPageState extends State<LoginPage> {
           borderRadius: BorderRadius.circular(24),
         ),
         onPressed: () {
-          print(emailController.text);
+          setState(() {
+            _visibleCircular = true;
+          });
+
           loginCheck(context);
         },
         padding: EdgeInsets.all(12),
         color: Colors.lightBlueAccent,
-        child: Text('Log In', style: TextStyle(color: Colors.white)),
+        child: _visibleCircular
+            ? Visibility(
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.grey,
+                  color: Colors.blueGrey,
+                  strokeWidth: 2,
+                ),
+                visible: _visibleCircular,
+              )
+            : Text('Log In', style: TextStyle(color: Colors.white)),
       ),
     );
 
@@ -96,7 +111,9 @@ class _LoginPageState extends State<LoginPage> {
         'Forgot password?',
         style: TextStyle(color: Colors.black54),
       ),
-      onPressed: () {},
+      onPressed: () {
+        _showMyDialog(context);
+      },
     );
 
     return Scaffold(
@@ -144,6 +161,7 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         _warningMessage = true;
         _warningMessageContent = "Please fill all fields!";
+        _visibleCircular = false;
       });
     } else {
       late String _userEmail = "";
@@ -170,5 +188,81 @@ class _LoginPageState extends State<LoginPage> {
         _warningMessageContent = "Login for user $_userEmail";
       });
     }
+  }
+
+  Future<void> _showMyDialog(context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Password Reset'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: [
+                Form(
+                    key: _formKey1,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please fill the area!';
+                              }
+                              return null;
+                            },
+                            autofocus: false,
+                            decoration: InputDecoration(
+                              hintText: 'Email Address',
+                              contentPadding:
+                                  EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(32.0)),
+                            ),
+                            controller: newTaskController,
+                          ),
+                        ),
+                      ],
+                    )),
+              ],
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  primary: Colors.green,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12))),
+              onPressed: () {
+                FocusManager.instance.primaryFocus?.unfocus();
+                if (_formKey1.currentState!.validate()) {
+                  Authentication()
+                      .resetPassword(newTaskController.text)
+                      .then((value) {
+                    if (value == true) {
+                      print("oke");
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text("Password reset mail sent to " +
+                            newTaskController.text),
+                      ));
+                      Navigator.pop(context);
+                    } else {
+                      print("hahah");
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text("Error occured while sending email!"),
+                      ));
+                      Navigator.pop(context);
+                    }
+                  });
+                }
+              },
+              child: const Text('Send Reset Mail'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

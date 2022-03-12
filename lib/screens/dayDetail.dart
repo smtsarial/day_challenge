@@ -1,9 +1,11 @@
+import 'package:day_challenge/db/ad_helper.dart';
 import 'package:day_challenge/db/firestore.dart';
 import 'package:day_challenge/models/challenges.dart';
 import 'package:day_challenge/models/dailyChallenges.dart';
 import 'package:day_challenge/screens/challenge_detail.dart';
 import 'package:day_challenge/screens/userSpecific/editMyChallenges/editDailyChallenge.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class DayDetail extends StatefulWidget {
   const DayDetail(
@@ -37,6 +39,8 @@ class _DayDetailState extends State<DayDetail> {
   @override
   void initState() {
     if (mounted) {
+      _loadInterstitialAd();
+      _createBottomBannerAd();
       FirestoreHelper.checkDayStatus(widget.challengeID, widget.dayObject.id)
           .then((value) {
         setState(() {
@@ -64,6 +68,11 @@ class _DayDetailState extends State<DayDetail> {
             dayStatus == false
                 ? (FlatButton(
                     onPressed: () {
+                      if (_isInterstitialAdReady) {
+                        _interstitialAd?.show();
+                      } else {
+                        print("hazir değil");
+                      }
                       FirestoreHelper.completeDayTasks(
                               widget.challengeID, widget.dayObject.id)
                           .then((value) {
@@ -91,6 +100,11 @@ class _DayDetailState extends State<DayDetail> {
                     )))
                 : (FlatButton(
                     onPressed: () {
+                      if (_isInterstitialAdReady) {
+                        _interstitialAd?.show();
+                      } else {
+                        print("hazir değil");
+                      }
                       FirestoreHelper.removeDayTasks(
                               widget.challengeID, widget.dayObject.id)
                           .then((value) {
@@ -131,6 +145,13 @@ class _DayDetailState extends State<DayDetail> {
             },
           ),
         ),
+        bottomNavigationBar: _isBottomBannerAdLoaded
+            ? Container(
+                height: _bottomBannerAd.size.height.toDouble(),
+                width: _bottomBannerAd.size.width.toDouble(),
+                child: AdWidget(ad: _bottomBannerAd),
+              )
+            : null,
         body: Column(
           children: [
             SizedBox(
@@ -179,5 +200,62 @@ class _DayDetailState extends State<DayDetail> {
             ),
           ],
         ));
+  }
+
+  // ADD SECTION
+  @override
+  void dispose() {
+    super.dispose();
+    _bottomBannerAd.dispose();
+  }
+
+  late BannerAd _bottomBannerAd;
+  bool _isBottomBannerAdLoaded = false;
+  void _createBottomBannerAd() {
+    _bottomBannerAd = BannerAd(
+      adUnitId: AdHelper.bannerAdUnitId,
+      size: AdSize.banner,
+      request: AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBottomBannerAdLoaded = true;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+        },
+      ),
+    );
+    _bottomBannerAd.load();
+  }
+
+  //GEÇİŞ AD
+  InterstitialAd? _interstitialAd;
+
+  bool _isInterstitialAdReady = false;
+
+  void _loadInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: AdHelper.interstitialAdUnitId,
+      request: AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          this._interstitialAd = ad;
+
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+            onAdDismissedFullScreenContent: (ad) {
+              print("kapa");
+            },
+          );
+
+          _isInterstitialAdReady = true;
+        },
+        onAdFailedToLoad: (err) {
+          print('Failed to load an interstitial ad: ${err.message}');
+          _isInterstitialAdReady = false;
+        },
+      ),
+    );
   }
 }

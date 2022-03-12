@@ -3,6 +3,9 @@
    <application
         android:label="Daily Challenge - Create and Follow Online Learning Process"
         android:icon="@mipmap/ic_launcher">
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-6998401843365764~4269362001"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

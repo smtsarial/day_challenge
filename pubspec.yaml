@@ -1,5 +1,5 @@
 name: day_challenge
-description: A new Flutter project.
+description: Daily challenges for online users.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 1.0.3+3
 
 environment:
   sdk: ">=2.15.0-116.0.dev <3.0.0"
@@ -36,6 +36,8 @@ dependencies:
   flutter_rating_bar: ^4.0.0
   firebase_storage: ^10.2.6
   shared_preferences: ^2.0.13
+  google_mobile_ads: ^1.1.0
+  timeago: ^3.2.2
 
 
   # The following adds the Cupertino Icons font to your application.

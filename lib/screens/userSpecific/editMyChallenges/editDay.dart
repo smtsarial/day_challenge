@@ -1,8 +1,10 @@
+import 'package:day_challenge/db/ad_helper.dart';
 import 'package:day_challenge/db/firestore.dart';
 import 'package:day_challenge/models/challenges.dart';
 import 'package:day_challenge/models/dailyChallenges.dart';
 import 'package:day_challenge/screens/userSpecific/editMyChallenges/editDailyChallenge.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class EditDay extends StatefulWidget {
   const EditDay(
@@ -30,6 +32,7 @@ class _EditDayState extends State<EditDay> {
   List<dynamic> dayTasks = [];
   @override
   void initState() {
+    _createBottomBannerAd();
     setState(() {
       dayTasks = widget.dayObject.daily_tasks;
     });
@@ -66,6 +69,13 @@ class _EditDayState extends State<EditDay> {
           icon: const Icon(Icons.add),
           backgroundColor: Colors.green,
         ),
+        bottomNavigationBar: _isBottomBannerAdLoaded
+            ? Container(
+                height: _bottomBannerAd.size.height.toDouble(),
+                width: _bottomBannerAd.size.width.toDouble(),
+                child: AdWidget(ad: _bottomBannerAd),
+              )
+            : null,
         body: Column(
           children: [
             Divider(),
@@ -398,6 +408,7 @@ class _EditDayState extends State<EditDay> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12))),
               onPressed: () {
+                FocusManager.instance.primaryFocus?.unfocus();
                 Navigator.pop(context);
               },
               child: const Text('Cancel'),
@@ -406,5 +417,33 @@ class _EditDayState extends State<EditDay> {
         );
       },
     );
+  }
+
+  // ADD SECTION
+  @override
+  void dispose() {
+    super.dispose();
+    _bottomBannerAd.dispose();
+  }
+
+  late BannerAd _bottomBannerAd;
+  bool _isBottomBannerAdLoaded = false;
+  void _createBottomBannerAd() {
+    _bottomBannerAd = BannerAd(
+      adUnitId: AdHelper.bannerAdUnitId,
+      size: AdSize.banner,
+      request: AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBottomBannerAdLoaded = true;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+        },
+      ),
+    );
+    _bottomBannerAd.load();
   }
 }

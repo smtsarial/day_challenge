@@ -19,6 +19,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController Surname = new TextEditingController();
   TextEditingController phone = new TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _visibleCircular = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -31,7 +32,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       tag: 'hero',
       child: Center(
         child: Text(
-          "DAILY CHALLENGES",
+          "REGISTER",
           textAlign: TextAlign.center,
           style: TextStyle(
               fontSize: 40, fontWeight: FontWeight.bold, color: Colors.black54),
@@ -149,7 +150,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
         },
         padding: EdgeInsets.all(12),
         color: Colors.lightBlueAccent,
-        child: Text('Register', style: TextStyle(color: Colors.white)),
+        child: _visibleCircular
+            ? Visibility(
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.grey,
+                  color: Colors.blueGrey,
+                  strokeWidth: 2,
+                ),
+                visible: _visibleCircular,
+              )
+            : Text('Register', style: TextStyle(color: Colors.white)),
       ),
     );
 
@@ -163,7 +173,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Register"),
+        title: Text("Daily Challenges"),
       ),
       backgroundColor: Colors.white,
       body: Center(
@@ -205,6 +215,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future signUpValidation() async {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _visibleCircular = true;
+      });
       if (passwordController.text == passwordController2.text) {
         await Authentication()
             .signUp(emailController.text, passwordController.text)
@@ -219,13 +232,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                             content: Text('Error occured please try again!')),
-                      )
+                      ),
+                      setState(() {
+                        _visibleCircular = false;
+                      })
                     }
                 });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Please enter the same password!')),
         );
+        setState(() {
+          _visibleCircular = false;
+        });
       }
     }
   }

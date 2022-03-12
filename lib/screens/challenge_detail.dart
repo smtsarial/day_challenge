@@ -1,9 +1,11 @@
+import 'package:day_challenge/db/ad_helper.dart';
 import 'package:day_challenge/db/auth.dart';
 import 'package:day_challenge/db/firestore.dart';
 import 'package:day_challenge/main.dart';
 import 'package:day_challenge/models/dailyChallenges.dart';
 import 'package:day_challenge/screens/dayDetail.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class ChallengeDetailList extends StatefulWidget {
   const ChallengeDetailList(
@@ -28,6 +30,7 @@ class _ChallengeDetailListState extends State<ChallengeDetailList> {
   @override
   void initState() {
     if (mounted) {
+      _createBottomBannerAd();
       Authentication()
           .getUser()
           .then((value) => setState(() => userMail = value!));
@@ -42,9 +45,19 @@ class _ChallengeDetailListState extends State<ChallengeDetailList> {
         setState(() {
           dailyChallenges = data;
         });
+        print(
+            "ANANNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN\n");
       });
     }
     super.initState();
+  }
+
+  bool? checkRegistered(data) {
+    List registeredOrNot = [];
+    data.completed_users.forEach((element) {
+      registeredOrNot.add(element.keys.contains(userMail.toString()));
+    });
+    return registeredOrNot.contains(true);
   }
 
   Future<bool> registerChallenge() async {
@@ -116,12 +129,22 @@ class _ChallengeDetailListState extends State<ChallengeDetailList> {
                     ))
           ],
         ),
+        bottomNavigationBar: _isBottomBannerAdLoaded
+            ? Container(
+                height: _bottomBannerAd.size.height.toDouble(),
+                width: _bottomBannerAd.size.width.toDouble(),
+                child: AdWidget(ad: _bottomBannerAd),
+              )
+            : null,
         body: isUserRegisteredToChallenge
             ? (dailyChallenges.length > 0
                 ? (ListView.builder(
                     itemCount: dailyChallenges.length,
                     itemBuilder: (context, position) {
                       return Card(
+                        color: checkRegistered(dailyChallenges[position])!
+                            ? Colors.blueGrey[700]
+                            : Colors.white,
                         margin: EdgeInsets.fromLTRB(12, 5, 12, 5),
                         child: Column(
                           children: [
@@ -146,14 +169,24 @@ class _ChallengeDetailListState extends State<ChallengeDetailList> {
                                 title: Text(
                                   "Day " + (position + 1).toString(),
                                   style: TextStyle(
-                                      color: Colors.black,
+                                      color: checkRegistered(
+                                              dailyChallenges[position])!
+                                          ? Colors.grey[400]
+                                          : Colors.lightGreenAccent[900],
                                       fontWeight: FontWeight.bold),
                                 ),
                                 subtitle:
                                     Text(dailyChallenges[position].day_topic),
                                 trailing: Wrap(
                                   spacing: 12,
-                                  children: [Icon(Icons.arrow_right)],
+                                  children: [
+                                    Icon(
+                                      checkRegistered(
+                                              dailyChallenges[position])!
+                                          ? Icons.done
+                                          : Icons.arrow_right,
+                                    )
+                                  ],
                                 )),
                           ],
                         ),
@@ -232,5 +265,33 @@ class _ChallengeDetailListState extends State<ChallengeDetailList> {
                   ],
                 ),
               )));
+  }
+
+  // ADD SECTION
+  @override
+  void dispose() {
+    super.dispose();
+    _bottomBannerAd.dispose();
+  }
+
+  late BannerAd _bottomBannerAd;
+  bool _isBottomBannerAdLoaded = false;
+  void _createBottomBannerAd() {
+    _bottomBannerAd = BannerAd(
+      adUnitId: AdHelper.bannerAdUnitId,
+      size: AdSize.banner,
+      request: AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBottomBannerAdLoaded = true;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+        },
+      ),
+    );
+    _bottomBannerAd.load();
   }
 }

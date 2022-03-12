@@ -1,3 +1,4 @@
+import 'package:day_challenge/db/ad_helper.dart';
 import 'package:day_challenge/db/firestore.dart';
 import 'package:day_challenge/db/storage.dart';
 import 'package:day_challenge/models/challenges.dart';
@@ -7,6 +8,7 @@ import 'package:day_challenge/screens/login/loginScreen.dart';
 import 'package:day_challenge/screens/userSpecific/registeredChallenges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ChallengeList extends StatefulWidget {
@@ -36,6 +38,7 @@ class _ChallengeListState extends State<ChallengeList> {
   void initState() {
     //Storage.listFiles();
     if (mounted) {
+      _createBottomBannerAd();
       FirestoreHelper.getDetailsList().then((data) {
         if (mounted) {
           setState(() {
@@ -80,6 +83,13 @@ class _ChallengeListState extends State<ChallengeList> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 219, 219, 219),
+      bottomNavigationBar: _isBottomBannerAdLoaded
+          ? Container(
+              height: _bottomBannerAd.size.height.toDouble(),
+              width: _bottomBannerAd.size.width.toDouble(),
+              child: AdWidget(ad: _bottomBannerAd),
+            )
+          : null,
       body: SafeArea(
         child: Container(
             child: Column(
@@ -218,5 +228,33 @@ class _ChallengeListState extends State<ChallengeList> {
         )),
       ),
     );
+  }
+
+// ADD SECTION
+  @override
+  void dispose() {
+    super.dispose();
+    _bottomBannerAd.dispose();
+  }
+
+  late BannerAd _bottomBannerAd;
+  bool _isBottomBannerAdLoaded = false;
+  void _createBottomBannerAd() {
+    _bottomBannerAd = BannerAd(
+      adUnitId: AdHelper.bannerAdUnitId,
+      size: AdSize.banner,
+      request: AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBottomBannerAdLoaded = true;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+        },
+      ),
+    );
+    _bottomBannerAd.load();
   }
 }

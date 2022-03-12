@@ -1,3 +1,4 @@
+import 'package:day_challenge/db/ad_helper.dart';
 import 'package:day_challenge/db/auth.dart';
 import 'package:day_challenge/db/firestore.dart';
 import 'package:day_challenge/db/storage.dart';
@@ -6,6 +7,7 @@ import 'package:day_challenge/models/challenges.dart';
 import 'package:day_challenge/screens/challenge_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisteredChallenges extends StatefulWidget {
@@ -24,16 +26,19 @@ class _RegisteredChallengesState extends State<RegisteredChallenges> {
 
   @override
   void initState() {
-    Authentication().getUser().then((value) =>
-        FirestoreHelper.getFavoriteChallenges(value).then((value) => {
-              if (mounted)
-                {
-                  setState(() {
-                    challengeLists = value;
-                    challengeListsCopy = value;
-                  })
-                }
-            }));
+    if (mounted) {
+      _createBottomBannerAd();
+      Authentication().getUser().then((value) =>
+          FirestoreHelper.getFavoriteChallenges(value).then((value) => {
+                if (mounted)
+                  {
+                    setState(() {
+                      challengeLists = value;
+                      challengeListsCopy = value;
+                    })
+                  }
+              }));
+    }
 
     super.initState();
   }
@@ -41,6 +46,13 @@ class _RegisteredChallengesState extends State<RegisteredChallenges> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: _isBottomBannerAdLoaded
+          ? Container(
+              height: _bottomBannerAd.size.height.toDouble(),
+              width: _bottomBannerAd.size.width.toDouble(),
+              child: AdWidget(ad: _bottomBannerAd),
+            )
+          : null,
       body: SafeArea(
         child: Container(
             child: Column(
@@ -194,5 +206,33 @@ class _RegisteredChallengesState extends State<RegisteredChallenges> {
       });
       return "dummySearchList";
     }
+  }
+
+  // ADD SECTION
+  @override
+  void dispose() {
+    super.dispose();
+    _bottomBannerAd.dispose();
+  }
+
+  late BannerAd _bottomBannerAd;
+  bool _isBottomBannerAdLoaded = false;
+  void _createBottomBannerAd() {
+    _bottomBannerAd = BannerAd(
+      adUnitId: AdHelper.bannerAdUnitId,
+      size: AdSize.banner,
+      request: AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBottomBannerAdLoaded = true;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+        },
+      ),
+    );
+    _bottomBannerAd.load();
   }
 }

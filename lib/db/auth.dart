@@ -29,4 +29,16 @@ class Authentication {
     User? user = await _firebaseAuth.currentUser;
     return user?.email;
   }
+
+  Future<bool> resetPassword(String email) async {
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email).then((value) {
+        value;
+      });
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
 }

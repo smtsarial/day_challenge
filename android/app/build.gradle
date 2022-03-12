@@ -67,6 +67,8 @@ android {
    buildTypes {
        release {
            signingConfig signingConfigs.release
+           shrinkResources true
+            minifyEnabled true
        }
    }
 
@@ -78,6 +80,7 @@ flutter {
 }
 
 dependencies {
+    implementation 'com.google.android.gms:play-services-ads:20.6.0'
     implementation platform('com.google.firebase:firebase-bom:29.0.4')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
