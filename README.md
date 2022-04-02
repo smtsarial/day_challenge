@@ -1,27 +1,28 @@
 # day_challenge
-
-A new Flutter project.
+Complete your Daily Challenges. Start with the basics and go further with practice. New! See everyone’s progress, learn useful tips and keep track of your achievements. Build up new habits in 30 days, in one month, or any time you want. It’s easy, streak your workflow on the app, join other people’s challenges or create your own and enjoy it on daily basis.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
-![alt text](https://github.com/smtsarial/day_challenge/blob/master/github-images/Screenshot_1648397910.png)
-
-![alt text](https://github.com/smtsarial/day_challenge/blob/master/github-images/Screenshot_1648397910.png)
-![alt text](https://github.com/smtsarial/day_challenge/blob/master/github-images/Screenshot_1648397919.png)
-![alt text](https://github.com/smtsarial/day_challenge/blob/master/github-images/Screenshot_1648397921.png)
-![alt text](https://github.com/smtsarial/day_challenge/blob/master/github-images/Screenshot_1648397925.png)
-![alt text](https://github.com/smtsarial/day_challenge/blob/master/github-images/Screenshot_1648397940.png)
-![alt text](https://github.com/smtsarial/day_challenge/blob/master/github-images/Screenshot_1648397949.png)
-![alt text](https://github.com/smtsarial/day_challenge/blob/master/github-images/Screenshot_1648397953.png)
-![alt text](https://github.com/smtsarial/day_challenge/blob/master/github-images/Screenshot_1648397966.png)
+<table>
+  <tr>
+    <td>First Screen Page</td>
+     <td>Holiday Mention</td>
+     <td>Present day in purple and selected day in pink</td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/smtsarial/day_challenge/blob/master/github-images/Screenshot_1648397910.png" width=270></td>
+    <td><img src="https://github.com/smtsarial/day_challenge/blob/master/github-images/Screenshot_1648397919.png" width=270></td>
+    <td><img src="https://github.com/smtsarial/day_challenge/blob/master/github-images/Screenshot_1648397921.png" width=270></td>
+  </tr> 
+  <tr>
+    <td><img src="https://github.com/smtsarial/day_challenge/blob/master/github-images/Screenshot_1648397925.png" width=270></td>
+    <td><img src="https://github.com/smtsarial/day_challenge/blob/master/github-images/Screenshot_1648397940.png" width=270></td>
+    <td><img src="https://github.com/smtsarial/day_challenge/blob/master/github-images/Screenshot_1648397949.png" width=270></td>
+  </tr>
+   <tr>
+    <td><img src="https://github.com/smtsarial/day_challenge/blob/master/github-images/Screenshot_1648397953.png" width=270></td>
+    <td><img src="https://github.com/smtsarial/day_challenge/blob/master/github-images/Screenshot_1648397966.png" width=270></td>
+    <td><img src="https://github.com/smtsarial/day_challenge/blob/master/github-images/Screenshot_1648397921.png" width=270></td>
+  </tr>
+ </table>
