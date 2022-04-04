@@ -69,7 +69,6 @@ class _CreateNewChallengeState extends State<CreateNewChallenge> {
                     }
                     return null;
                   },
-                  keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     border: UnderlineInputBorder(),
                     labelText: 'Challenge Description',
@@ -148,7 +147,7 @@ class _CreateNewChallengeState extends State<CreateNewChallenge> {
                               star.text,
                               type.text,
                               day_count.text)
-                          .then((value) {
+                          .then((value) async {
                         if (value == true) {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text("Challenge created successfully!"),
@@ -158,16 +157,16 @@ class _CreateNewChallengeState extends State<CreateNewChallenge> {
                             content: Text("Error occured!"),
                           ));
                         }
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  LaunchScreen(currentIndex: 2)),
-                        );
-                      });
+                      }).then((value) => Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LaunchScreen(
+                                          currentIndex: 2,
+                                        )),
+                              ));
                     }
                   },
-                  child: const Text('Save Your Information'),
+                  child: const Text('Create New Challenge'),
                 ),
               ),
             ],

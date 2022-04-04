@@ -477,6 +477,14 @@ class FirestoreHelper {
 
   ///END GET METHODS
   /// START POST METHODS
+  static Future<bool> deleteChallenge(challengeID) async {
+    try {
+      await db.collection('challenges').doc(challengeID).delete();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 
   static Future<bool> createNewChallenge(
       name, description, hardness, type, dayCount) async {
@@ -489,9 +497,9 @@ class FirestoreHelper {
                   userData.lname,
                   userData.email,
                   int.parse(hardness),
-                  description.toCapitalized(),
-                  name.toTitleCase(),
-                  type.toTitleCase(),
+                  description,
+                  name,
+                  type,
                   int.parse(dayCount))
               .toMap());
         });

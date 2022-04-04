@@ -56,6 +56,16 @@ class _EditDailyChallengeState extends State<EditDailyChallenge> {
     super.initState();
   }
 
+  void refreshData() {
+    initState();
+  }
+
+  onGoBack(dynamic value) {
+    refreshData();
+    print("hello");
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,13 +89,13 @@ class _EditDailyChallengeState extends State<EditDailyChallenge> {
             IconButton(
               icon: Icon(Icons.details),
               onPressed: () {
-                Navigator.pushReplacement(
+                Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => EditChallengeMain(
                             challengeID: widget.challengeID,
                           )),
-                );
+                ).then(onGoBack);
               },
             ),
           ]),

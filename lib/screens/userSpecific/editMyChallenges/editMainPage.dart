@@ -213,6 +213,36 @@ class _EditChallengeMainState extends State<EditChallengeMain> {
                   child: const Text('Save Your Information'),
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 5),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      primary: Colors.red,
+                      fixedSize: Size(350, 75),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25))),
+                  onPressed: () {
+                    FirestoreHelper.deleteChallenge(widget.challengeID)
+                        .then((value) async {
+                      if (value == true) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Challenge Deleted Successfully')),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Error occured while delete.')),
+                        );
+                      }
+                    }).then((value) {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    });
+                  },
+                  child: const Text('Delete this challenge'),
+                ),
+              ),
             ],
           ),
         )));

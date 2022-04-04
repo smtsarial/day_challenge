@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:day_challenge/db/firestore.dart';
 import 'package:day_challenge/screens/challenge_lists.dart';
 import 'package:day_challenge/screens/login/loginScreen.dart';
 import 'package:day_challenge/screens/login/profile.dart';
@@ -18,14 +16,7 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  Future testData() async {
-    //FirebaseFirestore db = FirebaseFirestore.instance;
-    //var data = await db.collection('challenges').get();
-    //var details = data.docs.toList();
-    //details.forEach((item) {
-    //  print(item);
-    //});
-  }
+  Future testData() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -52,13 +43,13 @@ class _LaunchScreenState extends State<LaunchScreen> {
   Future<void> readySharedPreferences() async {
     var sharedPreferences = await SharedPreferences.getInstance();
     var _usermail = sharedPreferences.getString("userMail");
-    print(_usermail.toString());
     setState(() {
       userMail = _usermail.toString();
     });
   }
 
   late int _currentIndex;
+
   @override
   void initState() {
     setState(() {

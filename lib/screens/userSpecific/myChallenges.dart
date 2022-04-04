@@ -58,11 +58,10 @@ class _MyListsState extends State<MyLists> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Add your onPressed code here!
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => CreateNewChallenge()),
-          );
+          ).then(onGoBack);
         },
         backgroundColor: Colors.blueGrey,
         child: const Icon(Icons.add),
@@ -148,7 +147,7 @@ class _MyListsState extends State<MyLists> {
                                                 builder: (context) =>
                                                     EditDailyChallenge(
                                                         challengeID: item.id)),
-                                          )
+                                          ).then(onGoBack)
                                         },
                                     title: Text(
                                       item.challenge_name,
@@ -264,5 +263,14 @@ class _MyListsState extends State<MyLists> {
       ),
     );
     _bottomBannerAd.load();
+  }
+
+  void refreshData() {
+    initState();
+  }
+
+  onGoBack(dynamic value) {
+    refreshData();
+    setState(() {});
   }
 }

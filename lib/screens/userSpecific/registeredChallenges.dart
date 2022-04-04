@@ -23,6 +23,14 @@ class _RegisteredChallengesState extends State<RegisteredChallenges> {
   late String userMail = "";
 
   TextEditingController editingController = TextEditingController();
+  void refreshData() {
+    initState();
+  }
+
+  onGoBack(dynamic value) {
+    refreshData();
+    setState(() {});
+  }
 
   @override
   void initState() {
@@ -131,7 +139,7 @@ class _RegisteredChallengesState extends State<RegisteredChallenges> {
                                                             item.challenge_name,
                                                         challenge_description: item
                                                             .challenge_description)),
-                                          )
+                                          ).then(onGoBack)
                                         },
                                     title: Text(
                                       item.challenge_name,

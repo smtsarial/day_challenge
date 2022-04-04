@@ -24,6 +24,14 @@ class _ChallengeListState extends State<ChallengeList> {
   late String userMail;
 
   TextEditingController editingController = TextEditingController();
+  void refreshData() {
+    initState();
+  }
+
+  onGoBack(dynamic value) {
+    refreshData();
+    setState(() {});
+  }
 
   Future<void> readySharedPreferences() async {
     var sharedPreferences = await SharedPreferences.getInstance();
@@ -158,7 +166,7 @@ class _ChallengeListState extends State<ChallengeList> {
                               children: [
                                 ListTile(
                                     onTap: () => {
-                                          Navigator.pushReplacement(
+                                          Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
@@ -168,7 +176,7 @@ class _ChallengeListState extends State<ChallengeList> {
                                                             item.challenge_name,
                                                         challenge_description: item
                                                             .challenge_description)),
-                                          )
+                                          ).then(onGoBack)
                                         },
                                     title: Text(
                                       item.challenge_name.toString(),
